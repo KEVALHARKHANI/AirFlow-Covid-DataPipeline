@@ -1,0 +1,7 @@
+/plugins/support_files/
+/logs
+/dockerfiles
+/Covid_data/helpful.py
+/Covid_data/mysql_con.py
+.idea/inspectionProfiles/workspace.xml
+

@@ -18,8 +18,6 @@ def first(ti):
     return "hello"
 
 def extraction(ti):
-    e_flag=False
-    raise ValueError("this is test")
     url = 'https://www.worldometers.info/coronavirus/'
     print('url:',url)
     page_source = requests.get(url).content
@@ -50,7 +48,6 @@ def extraction(ti):
     print(df.head())
     df.to_csv(f'{dag_path}/Covid_data/raw_data.csv',index=False)
     e_flag=True
-    ti.xcom_push(key='exe_flage',value = e_flag)
 
 
 
@@ -67,8 +64,7 @@ def data_transformation(ti):
     df[df.columns[1:14].append(df.columns[15:])] = df[df.columns[1:14].append(df.columns[15:])].applymap(covert_numeric)
     df[df.columns[1:14].append(df.columns[15:])] = df[df.columns[1:14].append(df.columns[15:])].astype('Int64')
     df.dropna(how=any, thresh=16)
-    df.to_csv(f'{dag_path}/Covid_data/Cleaned_data/{str(datetime.today().date())}_Covid.csv')
-    ti.xcom_pull(key='exe_flag', value=True)
+    df.to_csv(f'{dag_path}/Covid_data/Cleaned_data/{str(datetime.today().date())}_Covid.csv',index=False)
 
 
 
@@ -105,7 +101,7 @@ def data_load(ti):
         id = ids[0]
         df_len = df.shape[0]
         print(id[0])
-        df['id'] = pd.Series([id[0] for i in range(df_len)])
+        df['date_id'] = pd.Series([id[0] for i in range(df_len)])
         print(df.head())
         print(df.dtypes)
         df.to_sql(name="Covid_table", con=conn, if_exists='append', index=False)
